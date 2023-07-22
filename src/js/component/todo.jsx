@@ -21,19 +21,34 @@ export const ToDo = () => {
                 console.log(response.status, response.statusText)
             }
     }; 
-    const handleAddTask = (task) => {
-        if (newTaskTitle.trim() !== "") {
+    const handleAddTask = async () => {
+        if (newTaskTitle !== "") {
             const newTask = {
-                id: list.length + 1,
-                title: "newTaskTitle",
-                completed: false,
+                id:'list.length + 1',
+                title: newTaskTitle,
+                completed: true,
             };
-        }
-        // Clonamos el array actual y agregamos la nueva tarea
-        setTasks([...tasks, task]);
-        setNewTaskTitle("");
+            //try{
+                const response = await fetch('${host}/todos', {
+                    method: 'POST',
+                    body: JSON.stringify(newTask),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                    },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setList([...list, data]); // Agregar la nueva tarea a la lista actual
+                    setNewTaskTitle(""); // Limpiar el campo del título de la nueva tarea
+                    } else {
+                        console.log("Error al agregar la tarea");
+                        }
+            //}
+            //catch (error) {
+                //console.log("Error al agregar la tarea:", error.message);
+            //}
+        };
     };
-    
     const handleDeleteTask = (taskId) => {
         // Filtramos las tareas para eliminar la que coincida con el id proporcionado
         const updatedTasks = tasks.filter((task) => task.id !== taskId);
@@ -59,7 +74,7 @@ export const ToDo = () => {
                 <button onClick={handleAddTask}>Agregar tarea</button>
             </div>
             <div className="listcontainer">
-                <ul className="list">
+                <ul className="listul">
                     { !List ? "On load" :
                         List.map((todo, index) => (
                             <li key={index} className="tasklist">
@@ -75,14 +90,13 @@ export const ToDo = () => {
                                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
                                 </svg>
                                 )}
-                                <button onClick={() => handleDeleteTask(task.id)}>
+                                <button className="btneliminar" onClick={() => handleDeleteTask(task.id)}>
                                     Eliminar
                                 </button>
                             </li>
                         ))}
                 </ul>
             </div>
-            
         </div>
     );
-}
+};
