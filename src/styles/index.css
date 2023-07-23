@@ -22,3 +22,6 @@
     box-sizing: border-box;
     justify-content: space-between;
 }
+img, svg{
+    margin-right: 5px;
+}
